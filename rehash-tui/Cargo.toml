@@ -1,0 +1,11 @@
+[package]
+name = "rehash-tui"
+version = "0.1.0"
+edition = "2021"
+
+default-run = "rehash-tui"
+
+[dependencies]
+color-eyre = { version = "0.6.3", default-features = false }
+crossterm = "0.27.0"
+ratatui = "0.26.1"

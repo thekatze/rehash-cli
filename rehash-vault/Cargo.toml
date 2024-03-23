@@ -1,0 +1,9 @@
+[package]
+name = "rehash-vault"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+rehash-generator = { path = "../rehash-generator" }
+uuid = { version = "1.8.0", features = ["v4"] }
+
