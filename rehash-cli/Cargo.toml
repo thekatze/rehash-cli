@@ -1,0 +1,15 @@
+[package]
+name = "rehash-cli"
+description = "The rehash password manager cli. Generates secure passwords deterministically using cryptographic hashing algorithms."
+version = "0.1.0"
+edition = "2021"
+authors = ["Leo Katzengruber <leofel.katz@gmail.com>"]
+license = "MIT"
+
+[dependencies]
+arboard = { version = "3.3.2", default-features = false }
+clap = { version = "4.5.3", features = ["derive"] }
+color-eyre = { version = "0.6.3", default-features = false }
+rehash = { path = "../rehash" }
+rpassword = "7.3.1"
+
