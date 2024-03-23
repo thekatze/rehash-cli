@@ -1,9 +1,9 @@
 use crossterm::{
-    event,
+    event::{self, KeyCode, KeyEvent},
     terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
     ExecutableCommand,
 };
-use ratatui::{backend::CrosstermBackend, style::Stylize as _, widgets::Paragraph, Terminal};
+use ratatui::{backend::CrosstermBackend, widgets::Paragraph, Frame, Terminal};
 
 fn reset_terminal() -> color_eyre::Result<()> {
     std::io::stdout().execute(LeaveAlternateScreen)?;
@@ -32,6 +32,74 @@ fn setup_panic_hooks() -> color_eyre::Result<()> {
     Ok(())
 }
 
+#[derive(Clone)]
+struct HelloModel {
+    count: i32,
+}
+
+#[derive(Clone)]
+struct SecondModel {}
+impl Model for SecondModel {
+    fn apply_event(&self, _event: crossterm::event::Event) -> Box<dyn Model> {
+        Box::new(self.clone())
+    }
+
+    fn draw(&self, frame: &mut Frame) {
+        frame.render_widget(Paragraph::new("Success! (q to exit)"), frame.size())
+    }
+}
+
+enum HelloMessage {
+    Increment,
+    Decrement,
+}
+
+trait Model {
+    fn apply_event(&self, event: crossterm::event::Event) -> Box<dyn Model>;
+    fn draw(&self, frame: &mut Frame);
+}
+
+impl Model for HelloModel {
+    fn apply_event(&self, event: crossterm::event::Event) -> Box<dyn Model> {
+        // handle_event() -> Message
+        let message = match event {
+            event::Event::Key(KeyEvent { code, .. }) => match code {
+                KeyCode::Char('j') => Some(HelloMessage::Decrement),
+                KeyCode::Char('k') => Some(HelloMessage::Increment),
+                _ => None,
+            },
+            _ => None,
+        };
+
+        // apply_message() -> Model
+        let new_model = match message {
+            Some(HelloMessage::Increment) => Box::new(Self {
+                count: self.count + 1,
+            }),
+            Some(HelloMessage::Decrement) => Box::new(Self {
+                count: self.count - 1,
+            }),
+            None => Box::new(self.clone()),
+        };
+
+        if new_model.count >= 10 {
+            Box::new(SecondModel {})
+        } else {
+            new_model
+        }
+    }
+
+    fn draw(&self, frame: &mut Frame) {
+        frame.render_widget(
+            Paragraph::new(format!(
+                "Counter (get it to ten by pressing k): {:0>2}/10",
+                self.count
+            )),
+            frame.size(),
+        )
+    }
+}
+
 fn main() -> color_eyre::Result<()> {
     setup_panic_hooks()?;
 
@@ -40,23 +108,24 @@ fn main() -> color_eyre::Result<()> {
 
     let mut terminal = Terminal::new(CrosstermBackend::new(std::io::stdout()))?;
 
+    let mut current_model: Option<Box<dyn Model>> = Some(Box::new(HelloModel { count: 0 }));
+
     loop {
-        terminal.draw(|frame| {
-            let area = frame.size();
-            frame.render_widget(
-                Paragraph::new("Hello World! ('q' to quit)")
-                    .white()
-                    .on_blue(),
-                area,
-            )
-        })?;
+        let model = current_model.take().unwrap();
+
+        terminal.draw(|frame| model.draw(frame))?;
 
         let event = event::read()?;
-        match event {
-            event::Event::Key(_) => break,
-            event::Event::Resize(_, _) => todo!(),
-            _ => (),
-        };
+
+        if let event::Event::Key(crossterm::event::KeyEvent {
+            code: KeyCode::Char('q'),
+            ..
+        }) = event
+        {
+            break;
+        }
+
+        current_model = Some(model.apply_event(event));
     }
 
     reset_terminal()?;
