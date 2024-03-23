@@ -506,23 +506,23 @@ dependencies = [
 ]
 
 [[package]]
-name = "rehash"
-version = "0.1.0"
-dependencies = [
- "argon2",
- "base64",
- "thiserror",
-]
-
-[[package]]
 name = "rehash-cli"
 version = "0.1.0"
 dependencies = [
  "arboard",
  "clap",
  "color-eyre",
- "rehash",
+ "rehash-generator",
  "rpassword",
+]
+
+[[package]]
+name = "rehash-generator"
+version = "0.1.0"
+dependencies = [
+ "argon2",
+ "base64",
+ "thiserror",
 ]
 
 [[package]]

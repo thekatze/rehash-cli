@@ -1,8 +1,7 @@
 [workspace]
 resolver = "2"
 members = [
-    "rehash",
-    "rehash-cli",
+    "rehash-cli", "rehash-generator",
 ]
 
 [profile.dev.package."*"]

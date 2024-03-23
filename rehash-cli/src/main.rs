@@ -4,9 +4,15 @@ use color_eyre::eyre::Context as _;
 #[derive(clap::Parser)]
 #[command(version, about, long_about = None)]
 struct Args {
-    #[arg(long, help = "The url of the service to generate the password for, required to derive the password")]
+    #[arg(
+        long,
+        help = "The url of the service to generate the password for, required to derive the password"
+    )]
     url: String,
-    #[arg(long, help = "The username for the service to generate the password for, required to derive the password")]
+    #[arg(
+        long,
+        help = "The username for the service to generate the password for, required to derive the password"
+    )]
     username: String,
 
     #[arg(
@@ -56,11 +62,11 @@ fn main() -> color_eyre::Result<()> {
         cli.custom.memory_size,
         cli.custom.parallelism,
     ) {
-        (None, None, None) => rehash::GeneratorOptions::Recommended(
-            rehash::RecommendedGeneratorOption::Recommended2024,
+        (None, None, None) => rehash_generator::GeneratorOptions::Recommended(
+            rehash_generator::RecommendedGeneratorOption::Recommended2024,
         ),
         (Some(iterations), Some(memory_size), Some(parallelism)) => {
-            rehash::GeneratorOptions::Custom(rehash::CustomGeneratorOptions {
+            rehash_generator::GeneratorOptions::Custom(rehash_generator::CustomGeneratorOptions {
                 iterations,
                 memory_size,
                 parallelism,
@@ -76,12 +82,12 @@ fn main() -> color_eyre::Result<()> {
             .context("could not prompt password, expected interactive shell")?,
     );
 
-    let password = rehash::generate(
+    let password = rehash_generator::generate(
         &vault_password,
-        rehash::Account {
+        rehash_generator::Account {
             url: cli.url,
             username: cli.username,
-            options: rehash::FormatOptions {
+            options: rehash_generator::FormatOptions {
                 generation: cli.generation,
                 length: cli.length,
             },
