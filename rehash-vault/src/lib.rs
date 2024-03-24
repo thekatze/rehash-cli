@@ -1,17 +1,17 @@
 use std::collections::HashMap;
 
 pub struct VaultSettings {
-    default_generator_options: rehash_generator::GeneratorOptions,
-    encrypt: bool,
+    pub default_generator_options: rehash_generator::GeneratorOptions,
+    pub encrypt: bool,
 }
 
 pub struct VaultAccount {
-    url: String,
-    username: String,
-    options: rehash_generator::FormatOptions,
-    generator_options: rehash_generator::GeneratorOptions,
-    display_name: Option<String>,
-    notes: Option<String>,
+    pub url: String,
+    pub username: String,
+    pub options: rehash_generator::FormatOptions,
+    pub generator_options: rehash_generator::GeneratorOptions,
+    pub display_name: Option<String>,
+    pub notes: Option<String>,
 }
 
 impl From<VaultAccount> for rehash_generator::Account {
@@ -26,30 +26,30 @@ impl From<VaultAccount> for rehash_generator::Account {
 }
 
 pub struct Vault {
-    settings: VaultSettings,
-    entries: HashMap<uuid::Uuid, VaultAccount>,
+    pub settings: VaultSettings,
+    pub entries: HashMap<uuid::Uuid, VaultAccount>,
 }
 
 pub struct EncryptedVault {
-    iv: Box<[u8]>,
-    store: Box<[u8]>,
+    pub iv: Box<[u8]>,
+    pub store: Box<[u8]>,
 }
 
 impl Vault {
-    pub fn encrypt(self, password: &str) -> EncryptedVault {
+    pub fn encrypt(self, _password: &str) -> EncryptedVault {
         todo!("encryption")
     }
 }
 
 impl EncryptedVault {
-    pub fn decrypt(self, password: &str) -> Vault {
+    pub fn decrypt(self, _password: &str) -> Vault {
         todo!("decryption")
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    // use super::*;
 
     #[test]
     fn it_works() {}
