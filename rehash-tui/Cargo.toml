@@ -1,0 +1,12 @@
+[package]
+name = "rehash-tui"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+rehash-generator = { path = "../rehash-generator" }
+rehash-vault = { path = "../rehash-vault" }
+clap = { version = "4.5.3", features = ["derive"] }
+color-eyre = { version = "0.6.3", default-features = false }
+rpassword = "7.3.1"
+

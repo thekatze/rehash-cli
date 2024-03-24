@@ -3,7 +3,9 @@ name = "rehash-generator"
 version = "0.1.0"
 edition = "2021"
 
+
 [dependencies]
 argon2 = "0.5.3"
 base64 = "0.22.0"
+serde = { version = "1.0.197", features = ["derive"] }
 thiserror = "1.0.58"

@@ -1,13 +1,19 @@
+#[derive(serde::Deserialize, Debug)]
 pub enum RecommendedGeneratorOption {
+    #[serde(rename = "2024")]
     Recommended2024,
 }
 
+#[derive(serde::Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
 pub struct CustomGeneratorOptions {
     pub iterations: u32,
     pub memory_size: u32,
     pub parallelism: u32,
 }
 
+#[derive(serde::Deserialize, Debug)]
+#[serde(untagged)]
 pub enum GeneratorOptions {
     Recommended(RecommendedGeneratorOption),
     Custom(CustomGeneratorOptions),
@@ -34,6 +40,7 @@ impl GeneratorOptions {
     }
 }
 
+#[derive(serde::Deserialize, Debug)]
 pub struct FormatOptions {
     pub generation: usize,
     pub length: usize,
