@@ -1,5 +1,5 @@
 use clap::Parser as _;
-use color_eyre::eyre::Context as _;
+use color_eyre::eyre::{Context as _, ContextCompat as _};
 
 #[derive(clap::Parser)]
 #[command(version, about, long_about = None)]
@@ -77,10 +77,10 @@ fn main() -> color_eyre::Result<()> {
         ),
     };
 
-    let vault_password = cli.password.unwrap_or(
-        rpassword::prompt_password("Enter password: ")
-            .context("could not prompt password, expected interactive shell")?,
-    );
+    let vault_password = cli
+        .password
+        .or_else(|| rpassword::prompt_password("Enter password: ").ok())
+        .context("could not prompt password, expected interactive shell")?;
 
     let password = rehash_generator::generate(
         &vault_password,
